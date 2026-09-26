@@ -3,7 +3,7 @@
 This is an interactive browser-based Frontend Prototype for Edtronaut's B2B recruitment management system. The project was designed to visualize the automation of candidate screening and competency evaluation through AI Job Simulations.
 
 ## 📸 Dashboard Mockup
-![Recruiter Dashboard](assets/dashboard.png)
+![Recruiter Dashboard](Assets/dashboard.jpg)
 
 ## 🚀 Project Overview
 This product was developed as part of a Take-home Assignment for the IT BA / Product Owner role. The goal of this prototype is to provide highly tangible Product Requirements (PRD), enabling the Engineering team to easily understand the Data Logic and Business Rules prior to development.
