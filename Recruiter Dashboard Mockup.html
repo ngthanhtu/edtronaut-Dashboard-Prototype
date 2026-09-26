@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Recruiter Dashboard Mockup</title>
+<style>
+  :root{
+    --bg: #0D1B2A;
+    --panel: #16273F;
+    --panel-2: #1C3151;
+    --border: #2C3E5C;
+    --text: #FFFFFF;
+    --text-dim: #9FB3D9;
+    --accent: #4A7CF6;
+    --green: #34D399;
+    --amber: #FBBF24;
+    --red: #F87171;
+    --radius: 10px;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1400px;margin:0 auto;padding:16px 20px 60px;}
+
+  /* Navbar */
+  .navbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;background:var(--panel);border:1px solid var(--border);
+    border-radius:var(--radius);margin-bottom:14px;flex-wrap:wrap;gap:10px;
+  }
+  .navbar .logo{font-weight:800;letter-spacing:0.5px;font-size:15px;}
+  .navbar nav{display:flex;gap:22px;font-size:13px;color:var(--text-dim);flex-wrap:wrap;}
+  .navbar nav span{cursor:pointer;transition:color .15s;}
+  .navbar nav span:hover, .navbar nav span.active{color:var(--text);}
+  .navbar .meta{font-size:12px;color:var(--text-dim);}
+
+  /* Job header */
+  .job-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;background:var(--panel);border:1px solid var(--border);
+    border-radius:var(--radius);margin-bottom:14px;flex-wrap:wrap;gap:10px;
+  }
+  .job-header h1{font-size:16px;margin:0;font-weight:700;}
+  .job-header .sub{color:var(--text-dim);font-size:12px;margin-top:3px;}
+  .btn{
+    background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:8px;
+    font-size:12.5px;font-weight:600;cursor:pointer;transition:opacity .15s;
+  }
+  .btn:hover{opacity:.85;}
+  .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+  /* Metric tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+  .tile{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;}
+  .tile .num{font-size:24px;font-weight:800;}
+  .tile .label{font-size:11px;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+  .tile.warn .num{color:var(--amber);}
+
+  /* Pipeline */
+  .pipeline{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:8px;
+    flex-wrap:wrap;font-size:13px;color:var(--text-dim);
+  }
+  .pipeline b{color:var(--text);}
+  .pipeline .arrow{color:#556;}
+  .pipeline .highlight{background:var(--panel-2);color:var(--text);padding:3px 10px;border-radius:6px;}
+
+  /* Filters */
+  .filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  .filters input, .filters select{
+    background:var(--panel);border:1px solid var(--border);color:var(--text);
+    padding:8px 12px;border-radius:8px;font-size:12.5px;
+  }
+  .filters input{flex:1;min-width:160px;}
+
+  /* Table */
+  .table-wrap{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:auto;margin-bottom:20px;
+  }
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px;}
+  th{
+    text-align:left;padding:12px 14px;color:var(--text-dim);font-size:11px;
+    text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);
+    background:var(--panel-2);position:sticky;top:0;
+  }
+  td{padding:12px 14px;border-bottom:1px solid var(--border);}
+  tr.candidate-row{cursor:pointer;transition:background .12s;}
+  tr.candidate-row:hover{background:var(--panel-2);}
+  tr.candidate-row.selected{background:rgba(74,124,246,0.12);}
+  .badge{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block;}
+  .badge.clean{background:rgba(52,211,153,.15);color:var(--green);}
+  .badge.review{background:rgba(251,191,36,.15);color:var(--amber);}
+  .status{font-size:12px;padding:3px 10px;border-radius:6px;background:var(--panel-2);color:var(--text-dim);}
+  .status.shortlisted{color:var(--green);}
+  .status.rejected{color:var(--red);}
+  .link-btn{background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-weight:600;padding:0;margin-right:10px;}
+
+  /* Drawer */
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;
+    transition:opacity .2s;z-index:20;
+  }
+  .overlay.open{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;top:0;right:0;height:100%;width:400px;max-width:92vw;
+    background:var(--panel);border-left:1px solid var(--border);
+    transform:translateX(100%);transition:transform .25s ease;z-index:21;
+    padding:20px;overflow-y:auto;
+    padding-top:calc(20px + env(safe-area-inset-top,0px));
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer h2{font-size:16px;margin:0 0 4px;}
+  .drawer .sub{color:var(--text-dim);font-size:12px;margin-bottom:16px;}
+  .close-btn{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;}
+  .drawer .stat-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-dim);margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+  .drawer .stat-row b{color:var(--text);}
+  .radar-item{margin-bottom:10px;}
+  .radar-item .lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+  .bar-bg{height:6px;background:var(--panel-2);border-radius:4px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--accent);border-radius:4px;}
+  .ai-summary{
+    background:var(--panel-2);border-radius:8px;padding:12px;font-size:12.5px;
+    font-style:italic;color:var(--text-dim);margin:14px 0;line-height:1.5;
+  }
+  .drawer .actions{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+  .drawer .actions .btn{width:100%;}
+  .btn.reject{background:transparent;border:1px solid var(--red);color:var(--red);}
+  .btn.download{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--panel-2);border:1px solid var(--border);padding:10px 18px;border-radius:8px;
+    font-size:13px;opacity:0;transition:all .25s;z-index:30;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:780px){
+    .tiles{grid-template-columns:repeat(2,1fr);}
+    .navbar nav{order:3;width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="navbar">
+    <div class="logo">EDTRONAUT B2B</div>
+    <nav>
+      <span>Jobs</span><span class="active">Candidates</span><span>Onboarding</span><span>Analytics</span>
+    </nav>
+    <div class="meta">Org: Acme Corp &nbsp;·&nbsp; User: TA</div>
+  </div>
+
+  <div class="job-header">
+    <div>
+      <h1>Senior Business Analyst</h1>
+      <div class="sub">Flow: Simulation First</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost">+ Post New Job</button>
+      <button class="btn ghost">Configure Flow</button>
+    </div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="num">124</div><div class="label">Total Applied</div></div>
+    <div class="tile"><div class="num">88 <span style="font-size:13px;color:var(--text-dim);">(71%)</span></div><div class="label">Sim Completed</div></div>
+    <div class="tile"><div class="num">78/100</div><div class="label">Avg Sim Score</div></div>
+    <div class="tile warn"><div class="num">12</div><div class="label">Action Required</div></div>
+  </div>
+
+  <div class="pipeline">
+    <span><b>124</b> Applied</span><span class="arrow">→</span>
+    <span><b>88</b> Completed</span><span class="arrow">→</span>
+    <span class="highlight"><b>24</b> Shortlisted</span><span class="arrow">→</span>
+    <span><b>8</b> Interview</span><span class="arrow">→</span>
+    <span><b>2</b> Offer</span>
+  </div>
+
+  <div class="filters">
+    <input type="text" placeholder="Search name..." />
+    <select><option>Role: All</option></select>
+    <select><option>Score: ≥ 80%</option></select>
+    <select><option>Status: Completed</option></select>
+    <button class="btn ghost">Export CSV/PDF</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Sim Score</th><th>Domain</th><th>Soft Skill</th><th>Fraud</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <button class="close-btn" id="closeBtn">✕</button>
+  <div id="drawerContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const candidates = [
+    {name:"Nguyen Van A", score:92, domain:95, soft:88, fraud:"clean", status:"shortlisted", applied:"22/09/2026", time:"42m/60m", plag:4,
+     summary:"Strong grasp of business process analysis; handles exceptions rigorously."},
+    {name:"Tran Thi B", score:84, domain:80, soft:90, fraud:"clean", status:"completed", applied:"21/09/2026", time:"55m/60m", plag:2,
+     summary:"Clear communicator with solid requirement-gathering instincts."},
+    {name:"Le Van C", score:74, domain:60, soft:85, fraud:"review", status:"review", applied:"20/09/2026", time:"38m/60m", plag:41,
+     summary:"Fast completion time and phrasing patterns flagged for manual review."},
+    {name:"Pham Minh D", score:45, domain:40, soft:50, fraud:"clean", status:"rejected", applied:"19/09/2026", time:"60m/60m", plag:6,
+     summary:"Struggled with core requirement-analysis tasks; below pass threshold."}
+  ];
+
+  const statusLabel = {shortlisted:"Shortlisted", completed:"Completed", review:"Under Review", rejected:"Rejected"};
+  const tbody = document.getElementById('tbody');
+
+  function render(){
+    tbody.innerHTML = candidates.map((c,i) => `
+      <tr class="candidate-row" data-i="${i}">
+        <td>${c.name}</td>
+        <td>${c.score}/100</td>
+        <td>${c.domain}%</td>
+        <td>${c.soft}%</td>
+        <td><span class="badge ${c.fraud==='clean'?'clean':'review'}">${c.fraud==='clean'?'Clean':'Review !'}</span></td>
+        <td><span class="status ${c.status}">${statusLabel[c.status]}</span></td>
+        <td><button class="link-btn" data-i="${i}">View Detail</button></td>
+      </tr>
+    `).join('');
+  }
+  render();
+
+  const overlay = document.getElementById('overlay');
+  const drawer = document.getElementById('drawer');
+  const drawerContent = document.getElementById('drawerContent');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 1800);
+  }
+
+  function openDrawer(i){
+    const c = candidates[i];
+    drawerContent.innerHTML = `
+      <h2>${c.name}</h2>
+      <div class="sub">Apply Date: ${c.applied}</div>
+      <div class="stat-row">
+        <span>Overall: <b>${c.score}/100</b></span>
+        <span>Time: <b>${c.time}</b></span>
+        <span>Plagiarism: <b>${c.plag}% ${c.plag>30?'(High)':'(Low)'}</b></span>
+      </div>
+      <div class="radar-item">
+        <div class="lbl"><span>Problem Solving</span><span>${c.domain}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${c.domain}%"></div></div>
+      </div>
+      <div class="radar-item">
+        <div class="lbl"><span>Requirement Analysis</span><span>${Math.round((c.domain+c.score)/2)}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${Math.round((c.domain+c.score)/2)}%"></div></div>
+      </div>
+      <div class="radar-item">
+        <div class="lbl"><span>Communication</span><span>${c.soft}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${c.soft}%"></div></div>
+      </div>
+      <div class="ai-summary">AI Summary: "${c.summary}"</div>
+      <div class="actions">
+        <button class="btn" id="approveBtn">Approve to Shortlist</button>
+        <button class="btn reject" id="rejectBtn">Reject with Feedback</button>
+        <button class="btn download" id="downloadBtn">Download Dossier</button>
+      </div>
+    `;
+    overlay.classList.add('open');
+    drawer.classList.add('open');
+    document.querySelectorAll('.candidate-row').forEach(r=>r.classList.remove('selected'));
+    document.querySelector(`.candidate-row[data-i="${i}"]`).classList.add('selected');
+
+    document.getElementById('approveBtn').onclick = ()=>{
+      candidates[i].status = 'shortlisted';
+      render(); closeDrawer(); showToast(`${c.name} moved to Shortlist`);
+    };
+    document.getElementById('rejectBtn').onclick = ()=>{
+      candidates[i].status = 'rejected';
+      render(); closeDrawer(); showToast(`${c.name} rejected — feedback email queued (24h buffer)`);
+    };
+    document.getElementById('downloadBtn').onclick = ()=> showToast('Dossier download started (demo)');
+  }
+
+  function closeDrawer(){
+    overlay.classList.remove('open');
+    drawer.classList.remove('open');
+  }
+
+  document.addEventListener('click', (e)=>{
+    const rowBtn = e.target.closest('.link-btn');
+    const row = e.target.closest('.candidate-row');
+    if(rowBtn){ openDrawer(+rowBtn.dataset.i); }
+    else if(row && !rowBtn){ openDrawer(+row.dataset.i); }
+  });
+  document.getElementById('closeBtn').onclick = closeDrawer;
+  overlay.onclick = closeDrawer;
+</script>
+</body>
+</html>

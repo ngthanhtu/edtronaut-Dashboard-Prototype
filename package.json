@@ -1,0 +1,11 @@
+{
+  "name": "edtronaut-recruitment-suite",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start:api": "node backend/server.js",
+    "dev:api": "node --watch backend/server.js"
+  }
+}
